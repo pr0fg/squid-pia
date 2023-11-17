@@ -13,6 +13,37 @@ Docker container that runs the latest [Squid](https://github.com/squid-cache/squ
 * Auto checks VPN health every 15 seconds
 * Simplified configuation options
 
+# Pulling the Image
+`docker image pull ghcr.io/pr0fg/squid-pia`
+
+# Running via Docker CLI
+`docker run -it --rm --cap-add=NET_ADMIN --device=/dev/net/tun --sysctl net.ipv4.conf.all.src_valid_mark=1 -e VPN_REGION=ca_toronto -e VPN_USERNAME=pXXXXXXX -e VPN_PASSWORD=XXXXXXX -e LAN_NETWORK=192.168.1.0/24 -p 8080:8080/tcp squid-pia`
+
+# Running via Docker Compose
+```
+version: '3'
+
+services:
+
+  squid:
+    build: ./squid-pia
+    restart: unless-stopped
+    environment:
+      - TZ=America/Toronto
+      - VPN_REGION=${VPN_REGION}
+      - VPN_USERNAME=${VPN_USERNAME}
+      - VPN_PASSWORD=${VPN_PASSWORD}
+      - LAN_NETWORK=${LAN_NETWORK}
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun
+    sysctls:
+      - net.ipv4.conf.all.src_valid_mark=1
+    ports:
+      - 8080:8080
+```
+
 # Variables, Volumes, and Ports
 ## Environment Variables
 | Variable | Required | Function | Example |
