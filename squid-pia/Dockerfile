@@ -2,8 +2,6 @@ FROM debian:bookworm-slim
 
 WORKDIR /opt
 
-RUN usermod -u 99 nobody
-
 # Make directories
 RUN mkdir -p /etc/openvpn/configs 
 RUN mkdir -p /etc/squid
