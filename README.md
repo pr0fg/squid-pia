@@ -64,7 +64,7 @@ services:
 |`HEALTHCHECK_DNS_HOST`| No | DNS health check host |`HEALTHCHECK_DNS_HOST=abc.com`| google.com |
 |`HEALTHCHECK_PING_IP`| No | Ping health check IP |`HEALTHCHECK_PING_IP=1.2.3.4`| 8.8.8.8 |
 
-`LAN_NETWORK` is required to ensure packets from squid can return to their source.
+`LAN_NETWORK` is required to ensure packets can return to their source.
 
 ## Ports
 | Port | Proto | Required | Function | Example |
