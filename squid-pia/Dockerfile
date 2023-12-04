@@ -1,30 +1,10 @@
-FROM debian:bookworm-slim
+FROM ghcr.io/pr0fg/pia-docker-base:latest
 
 WORKDIR /opt
 
-# Make directories
-RUN mkdir -p /etc/openvpn/configs 
-RUN mkdir -p /etc/squid
-
 # Install dependencies
 RUN apt update \
-    && apt install -y --no-install-recommends \
-    curl \
-    ca-certificates \
-    dnsutils \
-    inetutils-ping \
-    ipcalc \
-    iproute2 \
-    iptables \
-    kmod \
-    moreutils \
-    net-tools \
-    openresolv \
-    openvpn \
-    procps \
-    squid \
-    tzdata \
-    unzip \
+    && apt install -y --no-install-recommends squid \
     && apt-get clean \
     && apt --purge autoremove -y \
     && rm -rf \
@@ -32,20 +12,15 @@ RUN apt update \
     /tmp/* \
     /var/tmp/*
 
-RUN rm -rf /etc/openvpn/*
-RUN rm -rf /etc/squid/*
-
 # Configs
-ADD openvpn/ /etc/openvpn/
+RUN rm -rf /etc/squid/*
 ADD squid/ /etc/squid/
 
-# Download PIA OpenVPN Configs
-RUN curl https://www.privateinternetaccess.com/openvpn/openvpn.zip --output /tmp/configs.zip && unzip /tmp/configs.zip -d /etc/openvpn/configs && rm /tmp/configs.zip
+# Entrypoint
+ADD entrypoint.sh /
+RUN chmod +x /entrypoint.sh
 
-# Runners
-RUN chmod +x /etc/openvpn/*.sh
-RUN chmod +x /etc/squid/*.sh
+# Health check env
+ENV HEALTHCHECK_PROCESS_NAME=squid
 
 EXPOSE 8080
-
-CMD ["/bin/bash", "/etc/openvpn/start.sh"]
